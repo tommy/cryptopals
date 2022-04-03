@@ -1,3 +1,5 @@
+#![allow(unused_imports)]
+
 use std::{
     fs::{self, read_to_string},
     io::{self, BufRead},
