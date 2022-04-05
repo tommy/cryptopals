@@ -5,7 +5,7 @@ use aes::cipher::generic_array::GenericArray;
 use aes::cipher::{BlockCipher, BlockDecrypt, BlockEncrypt, KeyInit};
 use aes::Aes128;
 
-fn aes_encrypt(key: &[u8], bs: &[u8]) -> Vec<u8> {
+fn aes_encrypt_block(key: &[u8], bs: &[u8]) -> Vec<u8> {
     let cipher = Aes128::new(GenericArray::from_slice(key));
     let mut block = GenericArray::clone_from_slice(bs);
 
@@ -13,7 +13,7 @@ fn aes_encrypt(key: &[u8], bs: &[u8]) -> Vec<u8> {
     block.to_vec()
 }
 
-fn aes_decrypt(key: &[u8], bs: &[u8]) -> Vec<u8> {
+fn aes_decrypt_block(key: &[u8], bs: &[u8]) -> Vec<u8> {
     let cipher = Aes128::new(GenericArray::from_slice(key));
     let mut block = GenericArray::clone_from_slice(bs);
 
@@ -25,8 +25,8 @@ fn aes_decrypt(key: &[u8], bs: &[u8]) -> Vec<u8> {
 fn test_aes_encrypt_decrypt() {
     let key = "YELLOW SUBMARINE".as_bytes();
     let plaintext = "1234567890123456".as_bytes();
-    let ciphertext = aes_encrypt(key, plaintext);
-    assert_eq!(plaintext, aes_decrypt(key, &ciphertext))
+    let ciphertext = aes_encrypt_block(key, plaintext);
+    assert_eq!(plaintext, aes_decrypt_block(key, &ciphertext))
 }
 
 fn cbc_decrypt(key: &[u8], iv: &[u8], bs: &[u8]) -> Vec<u8> {
@@ -34,7 +34,7 @@ fn cbc_decrypt(key: &[u8], iv: &[u8], bs: &[u8]) -> Vec<u8> {
     let mut prev = iv;
     let mut plaintext = vec![];
     for cipher_block in bs.chunks_exact(block_size) {
-        let mut plain_block = two::xor_two(&aes_decrypt(key, cipher_block), prev);
+        let mut plain_block = two::xor_two(&aes_decrypt_block(key, cipher_block), prev);
         prev = cipher_block;
         plaintext.append(&mut plain_block);
     }
