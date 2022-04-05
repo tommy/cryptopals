@@ -1,7 +1,7 @@
 #![allow(dead_code)]
 
 use std::collections::HashMap;
-fn detect_ecb(bs: &[u8]) -> u32 {
+pub fn detect_ecb(bs: &[u8]) -> u32 {
     let mut m: HashMap<&[u8], i32> = HashMap::new();
     for x in bs.chunks_exact(16) {
         *m.entry(x).or_insert(-1) += 1;
